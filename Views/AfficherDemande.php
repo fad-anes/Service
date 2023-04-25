@@ -1,7 +1,7 @@
 <?php
-	include 'C:\xampp0\htdocs\Service\Controller\ServiceC.php';
-	$ServiceC=new ServiceC();
-	$listeservice=$ServiceC->afficherService(); 
+	include 'C:\xampp0\htdocs\Service\Controller\DemandeC.php';
+	$DemandeC=new DemandeC();
+	$listedemande=$DemandeC->affichertout(); 
 ?>
 <html>
 	<head>
@@ -156,22 +156,19 @@
 
 
 	
-		<center><h1>Liste des Services</h1></center>
+		<center><h1>Liste de  Demande</h1></center>
 		<div style="display:flex;flex-wrap:wrap;justify-content:center;">
 			<?php
-				foreach($listeservice as $Service){
+            
+				foreach($listedemande as $Demande){
+
 			?>
 			<div style="border:1px solid #ccc;padding:10px;margin:10px;width:250px;">
-				<h3><?php echo $Service['nom']; ?></h3>
-				<p>Prix : <?php echo $Service['prix']; ?> Dt</p>
-				<p>Type : <?php echo $Service['type']; ?></p>
-				<form method="POST" action="modifierService.php">
-				<button type="submit" name="Modifier" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Modifier</button>
-
-					<input type="hidden" value=<?PHP echo $Service['ids']; ?> name="ids">
-				</form>
-				<button onclick="if(confirm('Êtes-vous sûr de vouloir supprimer ce produit?')){window.location.href='supprimerService.php?ids=<?php echo $Service['ids']; ?>';}" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Supprimer</button>
-                <button onclick="{window.location.href='AjoutDemande.php?ids=<?php echo $Service['ids']; ?>';}" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Demande</button>
+                <h2>Id du Demande : <?php echo $Demande['idde']; ?></h2>           
+				<h3><?php echo $Demande['nom']; ?></h3>
+				<p>Prix : <?php echo $Demande['prix']; ?> Dt</p>
+				<p>Type : <?php echo $Demande['type']; ?></p>
+				<button onclick="if(confirm('Êtes-vous sûr de vouloir Annuler ce Demande?')){window.location.href='supprimerDemande.php?idde=<?php echo $Demande['idde']; ?>';}" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Annuler</button>
 
 			</div>
 			<?php
@@ -179,8 +176,7 @@
 			?>
 		</div>
         <div style="text-align:center;">
-        <button class="button"><a href="index.html">Retour</a></button>
-	<button class="button"><a href="ajouterService.php">Ajouter un Service</a></button>
+        <button class="button"><a href="AfficheService.php">Retour</a></button>
     </div>
 <br>
 <br>
@@ -269,4 +265,3 @@
     <script src="js/main.js"></script>
 	</body>
 </html>
-

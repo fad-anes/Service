@@ -1,13 +1,76 @@
 <?php
-	include 'C:\xampp0\htdocs\Service\Controller\ServiceC.php';
-	$ServiceC=new ServiceC();
-	$listeservice=$ServiceC->afficherService(); 
+    include_once 'C:\xampp0\htdocs\Service\Model\Service.php';
+    include_once 'C:\xampp0\htdocs\Service\Controller\ServiceC.php';
+
+    $error = "";
+
+    // create Service
+    $Service = null;
+
+    // create an instance of the controller
+    $ServiceC = new ServiceC();
+    if (
+        isset($_POST["ids"]) &&	
+		isset($_POST["nom"]) &&		
+        isset($_POST["prix"]) &&
+		isset($_POST["type"])   
+    ) {
+        if (
+            !empty($_POST["ids"]) && 
+            !empty($_POST["nom"]) && 
+			!empty($_POST['prix']) &&
+            !empty($_POST["type"])  
+            ) {
+                $Service = new Service(
+                    $_POST['ids'],
+                    $_POST['nom'],
+                    $_POST['prix'],
+                    $_POST['type'] 
+                );
+            $ServiceC->modifierService($Service, $_POST["ids"]);
+            header('Location:AfficheService.php');
+        }
+        else
+            $error = "Missing information";
+    }    
 ?>
-<html>
-	<head>
-	<style>
-	.button {
-        background-color: #db2d2e;
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un Service</title>
+    <style>
+        /* Style the form */
+        form {
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+        }
+
+        /* Style the labels and inputs */
+        label, input, textarea {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        /* Style the buttons */
+        button, input[type="submit"], input[type="reset"] {
+            background-color: #db2d2e;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -16,17 +79,18 @@
             transition: background-color 0.3s ease;
             font-size: 16px;
             margin-right: 10px;
-	}
-    button a{
+        }
+
+        button a, input[type="submit"] a, input[type="reset"] a {
             color: white;
             text-decoration: none;
         }
 
-	.button:hover {
-  		background-color: #3e8e41;
-	}
-</style>
-<meta charset="UTF-8">
+        button:hover, input[type="submit"]:hover, input[type="reset"]:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+    <meta charset="UTF-8">
     <meta name="description" content="HVAC Template">
     <meta name="keywords" content="HVAC, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +99,6 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-
     <!-- Css Styles -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
@@ -46,10 +109,10 @@
     <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
-	</head>
-	<body>
-    <!-- Page Preloder -->
-    <div id="preloder">
+</head>
+    <body>
+ <!-- Page Preloder -->
+ <div id="preloder">
         <div class="loader"></div>
     </div>
 
@@ -155,33 +218,53 @@
 
 
 
-	
-		<center><h1>Liste des Services</h1></center>
-		<div style="display:flex;flex-wrap:wrap;justify-content:center;">
-			<?php
-				foreach($listeservice as $Service){
-			?>
-			<div style="border:1px solid #ccc;padding:10px;margin:10px;width:250px;">
-				<h3><?php echo $Service['nom']; ?></h3>
-				<p>Prix : <?php echo $Service['prix']; ?> Dt</p>
-				<p>Type : <?php echo $Service['type']; ?></p>
-				<form method="POST" action="modifierService.php">
-				<button type="submit" name="Modifier" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Modifier</button>
+        <hr>
+        
+        <div id="error">
+            <?php echo $error; ?>
+        </div>
+			
+		<?php
+			if (isset($_POST['ids'])){
+				$Service = $ServiceC->recupererService($_POST['ids']);
+				
+		?>
+        
+        <form action="" method="POST" onsubmit="return validerFormulaire();">
+           
+                
+                        <label for="ids">id:
+                        </label>
+                    
+                    <input type="text" name="ids" id="ids" value="<?php echo $Service['ids']; ?>" maxlength="20">
+                
+                        <label for="nom">Nom:
+                        </label>
+                   <input type="text" name="nom" id="nom" value="<?php echo $Service['nom']; ?>" maxlength="20">
+               
+                        <label for="prix">Prix:
+                        </label>
+                    
+                        <input type="text" name="prix" id="prix" value="<?php echo $Service['prix']; ?>" >
+                  
+                        <label for="type">Type:
+                        </label>
+                    
+                        <input type="text" name="type" id="type" value="<?php echo $Service['type']; ?>">
+                 
+                        <input type="submit" value="Modifier"> 
 
-					<input type="hidden" value=<?PHP echo $Service['ids']; ?> name="ids">
-				</form>
-				<button onclick="if(confirm('Êtes-vous sûr de vouloir supprimer ce produit?')){window.location.href='supprimerService.php?ids=<?php echo $Service['ids']; ?>';}" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Supprimer</button>
-                <button onclick="{window.location.href='AjoutDemande.php?ids=<?php echo $Service['ids']; ?>';}" style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Demande</button>
-
-			</div>
-			<?php
-				}
-			?>
-		</div>
+                        <input type="reset" value="Annuler" >
+                            
+        </form>
+		<?php
+		}
+		?>
         <div style="text-align:center;">
-        <button class="button"><a href="index.html">Retour</a></button>
-	<button class="button"><a href="ajouterService.php">Ajouter un Service</a></button>
-    </div>
+<button><a href="AfficheService.php">Retour à la liste des Services</a></button>
+</div>
+        
+
 <br>
 <br>
 
@@ -267,6 +350,27 @@
     <script src="js/jquery.slicknav.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
-	</body>
+    <script>
+function validerFormulaire() {
+  var ids = document.getElementById("ids").value;
+  var nom = document.getElementById("nom").value;
+  var prix = document.getElementById("prix").value;
+  var type = document.getElementById("type").value;
+  
+  // Vérifier que tous les champs sont remplis
+  if (ids == "" || nom == "" || prix == "" || type == "") {
+    alert("Veuillez remplir tous les champs.");
+    return false;
+  }
+  
+  // Vérifier que les champs ids et prix contiennent seulement des nombres
+  if (isNaN(ids) || isNaN(prix)) {
+    alert("Les champs id et prix doivent contenir seulement des nombres.");
+    return false;
+  }
+  
+  return true;
+}
+</script>
+    </body>
 </html>
-
