@@ -1,7 +1,99 @@
-<!DOCTYPE html>
-<html lang="zxx">
+<?php
+    include_once 'C:\xampp0\htdocs\Service\Model\Service.php';
+    include_once 'C:\xampp0\htdocs\Service\Controller\ServiceC.php';
 
+    $error = "";
+
+    // create produit
+    $Service = null;
+
+    // create an instance of the controller
+    $ServiceC = new ServiceC();
+    if (
+        isset($_POST["ids"]) &&	
+		isset($_POST["nom"]) &&		
+        isset($_POST["prix"]) &&
+		isset($_POST["type"])   
+    ) {
+        echo "Formulaire soumis !";
+    var_dump($_POST);
+        if (
+            !empty($_POST["ids"]) && 
+            !empty($_POST["nom"]) && 
+			!empty($_POST['prix']) &&
+            !empty($_POST["type"])  
+            ) {
+                $Service = new Service(
+                    $_POST['ids'],
+                    $_POST['nom'],
+                    $_POST['prix'],
+                    $_POST['type'] 
+                );
+                $ServiceC->ajouterService($Service);
+                header('Location:AfficheService.php');
+                }
+        else
+            $error = "Missing information";
+    }
+
+    
+?>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Service</title>
+    <style>
+        /* Style the form */
+        form {
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+        }
+
+        /* Style the labels and inputs */
+        label, input, textarea {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        /* Style the buttons */
+        button, input[type="submit"], input[type="reset"] {
+            background-color: #db2d2e;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        button a, input[type="submit"] a, input[type="reset"] a {
+            color: white;
+            text-decoration: none;
+        }
+
+        button:hover, input[type="submit"]:hover, input[type="reset"]:hover {
+            background-color: #3e8e41;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="description" content="HVAC Template">
     <meta name="keywords" content="HVAC, unica, creative, html">
@@ -11,7 +103,6 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-
     <!-- Css Styles -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
@@ -23,8 +114,7 @@
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
-
-<body>
+    <body>
     <!-- Page Preloder -->
     <div id="preloder">
         <div class="loader"></div>
@@ -125,24 +215,50 @@
             </div>
         </div>
     </header>
-    <!-- Header Section End -->
 
-    <!-- Hero Section Begin -->
-    <section class="hero spad set-bg" data-setbg="img/1.jpg">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7">
-                    <div class="hero__text">
-                        <div class="hero__text__title">
-                            <span>e.v.h Heberge et exploite des baies de recharge pour vehicules electriques de marque a acces universel</span>
-                        </div>
-    </section>
-    <!-- Hero Section End -->
 
-    
 
-    <!-- Footer Section Begin -->
-    <footer class="footer set-bg" data-setbg="img/footer-bg.jpg">
+
+
+
+
+
+
+
+        <div style="text-align:center;">
+            <h1>Ajouter un Service</h1>
+            <button><a href="AfficheService.php">Retour à la liste des Services</a></button>
+        </div>
+        <hr>
+        
+        <div id="error">
+            <?php echo $error; ?>
+        </div>
+        
+        <form action="" method="POST" onsubmit="return validerFormulaire();">
+        <label for="ids">id :</label>
+        <input type="text" name="ids" id="ids" required maxlength="20"><br><br>
+        
+        <label for="nom">Nom :</label>
+        <input type="text" name="nom" id="nom" required maxlength="20"><br><br>
+
+        <label for="prix">Prix :</label>
+        <input type="text" name="prix" id="prix" required><br><br>
+
+        <label for="type">Type :</label>
+        <input type="text" name="type" id="type" required maxlength="20"><br><br>
+
+        <input type="submit" name="submit" value="Ajouter">
+        <input type="reset" value="Annuler">
+        </form>
+
+
+
+
+        <br>
+<br>
+
+		<footer class="footer set-bg" data-setbg="img/footer-bg.jpg">
         <div class="container">
             <div class="footer__contact">
                 <div class="row">
@@ -224,6 +340,27 @@
     <script src="js/jquery.slicknav.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
-</body>
-
+    <script>
+function validerFormulaire() {
+  var ids = document.getElementById("ids").value;
+  var nom = document.getElementById("nom").value;
+  var prix = document.getElementById("prix").value;
+  var type = document.getElementById("type").value;
+  
+  // Vérifier que tous les champs sont remplis
+  if (ids == "" || nom == "" || prix == "" || type == "") {
+    alert("Veuillez remplir tous les champs.");
+    return false;
+  }
+  
+  // Vérifier que les champs ids et prix contiennent seulement des nombres
+  if (isNaN(ids) || isNaN(prix)) {
+    alert("Les champs id et prix doivent contenir seulement des nombres.");
+    return false;
+  }
+  
+  return true;
+}
+</script>
+    </body>
 </html>
